@@ -1,0 +1,3 @@
+Dec 10 2025 22:00:28
+{"type":8192,"message":"Creation of dynamic property Yoast\\WP\\SEO\\Premium\\Generated\\Cached_Container::$normalizedIds is deprecated","file":"\/home\/u836838422\/domains\/friskoslofjord.thurndesign.no\/public_html\/wp-content\/plugins\/wordpress-seo-premium\/src\/generated\/container.php","line":27}
+
