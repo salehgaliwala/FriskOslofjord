@@ -354,7 +354,7 @@ function ajax_category_pills_shortcode() {
 add_image_size('blog_square','400','400', true);
 add_shortcode('category_pills', 'ajax_category_pills_shortcode');
 
-// AJAX Handler s
+// AJAX Handler 
 function load_posts_by_category() {
     $category = $_POST['category'] ?? 'all';
     $paged = $_POST['page'] ?? 1;
