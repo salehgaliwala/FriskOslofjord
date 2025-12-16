@@ -172,13 +172,11 @@ function ajax_category_pills_shortcode() {
     </div>
 <script>
  jQuery(document).ready(function ($) {
-    let currentSeed = Math.floor(Math.random() * 1000000000);
     let currentCategory = 'all';
 
     function loadPosts(category = 'all', page = 1, shouldScroll = false) {
         if (category !== currentCategory) {
             currentCategory = category;
-            currentSeed = Math.floor(Math.random() * 1000000000);
         }
         const container = $('#posts-container');
         const pagination = $('#pagination-container');
@@ -191,8 +189,7 @@ function ajax_category_pills_shortcode() {
             data: {
                 action: 'load_posts_by_category',
                 category: category,
-                page: page,
-                seed: currentSeed
+                page: page
             },
             success: function (response) {
                 const parsed = JSON.parse(response);
@@ -357,29 +354,18 @@ function ajax_category_pills_shortcode() {
 add_image_size('blog_square','400','400', true);
 add_shortcode('category_pills', 'ajax_category_pills_shortcode');
 
-// Add filter to modify ORDER BY clause with seed
-function custom_orderby_with_seed($orderby, $query) {
-    $seed = $query->get('seed');
-    if ($query->get('orderby') === 'rand' && $seed) {
-        $orderby = "RAND(" . intval($seed) . ")";
-    }
-    return $orderby;
-}
-add_filter('posts_orderby', 'custom_orderby_with_seed', 10, 2);
-
 // AJAX Handler s
 function load_posts_by_category() {
     $category = $_POST['category'] ?? 'all';
     $paged = $_POST['page'] ?? 1;
-     $seed = isset($_POST['seed']) ? intval($_POST['seed']) : 0;
     $args = [
         'post_type' => 'post',
         'posts_per_page' => 12,
         'paged' => $paged,
         'status' => 'publish',
         'category__not_in' => [1], // Exclude "Uncategorized" (ID = 1 by default)
-         'orderby' => 'date', // Random order
-         'seed' => $seed, // Pass seed to query
+         'orderby' => 'date',
+         'order'   => 'DESC',
     ];
 
     if ($category !== 'all') {
