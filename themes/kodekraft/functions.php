@@ -347,6 +347,7 @@ function ajax_category_pills_shortcode() {
             }
         }
         #posts-container .post a{text-decoration: none;}
+        .post-date{margin-bottom:20px}
     </style>
     <?php
     return ob_get_clean();
