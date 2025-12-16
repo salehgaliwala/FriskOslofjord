@@ -367,7 +367,7 @@ function custom_orderby_with_seed($orderby, $query) {
 }
 add_filter('posts_orderby', 'custom_orderby_with_seed', 10, 2);
 
-// AJAX Handler
+// AJAX Handler s
 function load_posts_by_category() {
     $category = $_POST['category'] ?? 'all';
     $paged = $_POST['page'] ?? 1;
@@ -378,7 +378,7 @@ function load_posts_by_category() {
         'paged' => $paged,
         'status' => 'publish',
         'category__not_in' => [1], // Exclude "Uncategorized" (ID = 1 by default)
-         'orderby' => 'rand', // Random order
+         'orderby' => 'date', // Random order
          'seed' => $seed, // Pass seed to query
     ];
 
