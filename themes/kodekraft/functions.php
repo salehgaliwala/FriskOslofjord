@@ -387,7 +387,7 @@ function load_posts_by_category() {
         $posts_html .= '<a href="'.get_the_permalink().'">';
         $posts_html .= get_the_post_thumbnail(get_the_ID(), 'blog_square');
         $posts_html .= '</a>';
-      //  $posts_html .= '<div class="post-meta">' . get_the_date('d. F Y') . ' / ' . implode(', ', $category_links) . '</div>';
+      ////  $posts_html .= '<div class="post-meta">' . get_the_date('d. F Y') . ' / ' . implode(', ', $category_links) . '</div>';
         $posts_html .= '<div class="post-title"><a href="'.get_the_permalink().'">' . get_the_title() . '</a></div>';
         $posts_html .= '<div class="post-sub-title">' . get_post_meta(get_the_ID(), '_leverandor', true) . '</div>';
         $posts_html .= '<div class="post-date">📅 ' . get_the_date('d. F Y') . '</div>';
