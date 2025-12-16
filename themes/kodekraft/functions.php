@@ -284,7 +284,7 @@ function ajax_category_pills_shortcode() {
             width: 100%;
             height: auto;
         }
-        .post-meta {
+        .post-meta, .post-date {
             font-size: 14px;
             color: #888;
             margin-bottom: 10px;
@@ -390,6 +390,7 @@ function load_posts_by_category() {
       //  $posts_html .= '<div class="post-meta">' . get_the_date('d. F Y') . ' / ' . implode(', ', $category_links) . '</div>';
         $posts_html .= '<div class="post-title"><a href="'.get_the_permalink().'">' . get_the_title() . '</a></div>';
         $posts_html .= '<div class="post-sub-title">' . get_post_meta(get_the_ID(), '_leverandor', true) . '</div>';
+        $posts_html .= '<div class="post-date">📅 ' . get_the_date('d. F Y') . '</div>';
         $posts_html .= '<div class="post-excerpt">' . get_the_excerpt() . '</div>'; ;
         $posts_html .= '<a href="'.get_the_permalink().'" class="read-more">'.__('Les mer →').'</a>';
         $posts_html .= '</div>';
