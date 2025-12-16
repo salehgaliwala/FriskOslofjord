@@ -143,7 +143,7 @@ function custom_cpt_info_window_template() {
     return $cpt_info_window_template;
 }
 
-// Add Shortcode
+// Add Shortcode - M
 function ajax_category_pills_shortcode() {
     ob_start();
     ?>
