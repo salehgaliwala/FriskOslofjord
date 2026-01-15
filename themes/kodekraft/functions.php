@@ -146,23 +146,39 @@ function custom_cpt_info_window_template() {
 // Add Shortcode - M
 function ajax_category_pills_shortcode() {
     ob_start();
+    global $wpdb;
+
+    // Get Categories
+    $categories = get_categories();
+
+    // Get Months
+    $months = $wpdb->get_results("
+        SELECT DISTINCT YEAR(post_date) AS year, MONTH(post_date) AS month
+        FROM $wpdb->posts
+        WHERE post_type = 'post' AND post_status = 'publish'
+        ORDER BY post_date DESC
+    ");
     ?>
     <div id="category-pills">
-        <div class="category-pills-container">
-            <button class="pill active" data-category="all">Alle</button>
-            <?php
-            $categories = get_categories();
-            foreach ($categories as $category) {
-                echo '<button class="pill" data-category="' . esc_attr($category->slug) . '">' . esc_html($category->name) . '</button>';
-            }
-            ?>
-        </div>
-        <div id="category-dropdown-container" style="display: none;">
+        <div class="category-filter-container">
             <select id="category-dropdown">
-                <option value="all">Alle</option>
+                <option value="all">Alle kategorier</option>
                 <?php
                 foreach ($categories as $category) {
                     echo '<option value="' . esc_attr($category->slug) . '">' . esc_html($category->name) . '</option>';
+                }
+                ?>
+            </select>
+            <select id="month-dropdown">
+                <option value="all">Alle datoer</option>
+                <?php
+                if ($months) {
+                    foreach ($months as $m) {
+                        $date_obj = DateTime::createFromFormat('!m', $m->month);
+                        $month_name = date_i18n('F', $date_obj->getTimestamp());
+                        $value = $m->year . '-' . str_pad($m->month, 2, '0', STR_PAD_LEFT);
+                        echo '<option value="' . esc_attr($value) . '">' . esc_html($month_name . ' ' . $m->year) . '</option>';
+                    }
                 }
                 ?>
             </select>
@@ -172,12 +188,11 @@ function ajax_category_pills_shortcode() {
     </div>
 <script>
  jQuery(document).ready(function ($) {
-    let currentCategory = 'all';
 
-    function loadPosts(category = 'all', page = 1, shouldScroll = false) {
-        if (category !== currentCategory) {
-            currentCategory = category;
-        }
+    function loadPosts(page = 1, shouldScroll = false) {
+        const category = $('#category-dropdown').val();
+        const month = $('#month-dropdown').val();
+
         const container = $('#posts-container');
         const pagination = $('#pagination-container');
         container.html('Loading...');
@@ -189,6 +204,7 @@ function ajax_category_pills_shortcode() {
             data: {
                 action: 'load_posts_by_category',
                 category: category,
+                month: month,
                 page: page
             },
             success: function (response) {
@@ -211,34 +227,14 @@ function ajax_category_pills_shortcode() {
         });
     }
 
-    function toggleCategorySelector() {
-        if ($(window).width() < 768) {
-            $('.category-pills-container').hide();
-            $('#category-dropdown-container').show();
-        } else {
-            $('.category-pills-container').show();
-            $('#category-dropdown-container').hide();
-        }
-    }
-
-    $(window).on('resize', toggleCategorySelector);
-    toggleCategorySelector();
-
-    $('.category-pills-container').on('click', '.pill', function () {
-        $('.pill').removeClass('active');
-        $(this).addClass('active');
-        loadPosts($(this).data('category'), 1, true);
-    });
-
-    $('#category-dropdown').on('change', function () {
-        loadPosts($(this).val(), 1, true);
+    $('#category-dropdown, #month-dropdown').on('change', function () {
+        loadPosts(1, true);
     });
 
     $('#pagination-container').on('click', '.page-number', function (e) {
         e.preventDefault();
-        const category = $(window).width() < 768 ? $('#category-dropdown').val() : $('.pill.active').data('category');
         const page = $(this).data('page');
-        loadPosts(category, page, true);
+        loadPosts(page, true);
     });
 
     loadPosts();
@@ -248,32 +244,22 @@ function ajax_category_pills_shortcode() {
         #category-pills {
             text-align: center;
         }
-        .category-pills-container {
+        .category-filter-container {
             margin-bottom: 20px;
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
         }
-        button.pill {
-            display: inline-block;
-            margin: 5px;
-            padding: 10px 20px;
-            background-color: transparent;
-            border: 1px solid #166D47;
-            cursor: pointer;
-            color:#166D47;
-            border-radius: 0px !important;
-        }
-        button.pill:hover,button.pill.active {
-            background-color: #166D47;
-            border: 1px solid #166D47;
-            color: #fff;
-        }
-        #category-dropdown-container {
-            margin-bottom: 20px;
-        }
-        #category-dropdown {
+        #category-dropdown, #month-dropdown {
             padding: 10px;
             font-size: 16px;
             width: 100%;
             max-width: 300px;
+            border: 1px solid #166D47;
+            color: #166D47;
+            background-color: transparent;
+            cursor: pointer;
         }
         .post {
             margin: 15px;           
@@ -358,6 +344,7 @@ add_shortcode('category_pills', 'ajax_category_pills_shortcode');
 // AJAX Handler 
 function load_posts_by_category() {
     $category = $_POST['category'] ?? 'all';
+    $month = $_POST['month'] ?? 'all';
     $paged = $_POST['page'] ?? 1;
     $args = [
         'post_type' => 'post',
@@ -371,6 +358,18 @@ function load_posts_by_category() {
 
     if ($category !== 'all') {
         $args['category_name'] = sanitize_text_field($category);
+    }
+
+    if ($month !== 'all') {
+        $parts = explode('-', $month);
+        if (count($parts) === 2) {
+            $args['date_query'] = [
+                [
+                    'year'  => $parts[0],
+                    'month' => $parts[1],
+                ],
+            ];
+        }
     }
 
     $query = new WP_Query($args);
