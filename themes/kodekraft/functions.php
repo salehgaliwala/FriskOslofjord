@@ -156,8 +156,14 @@ function ajax_category_pills_shortcode() {
         SELECT DISTINCT YEAR(post_date) AS year, MONTH(post_date) AS month
         FROM $wpdb->posts
         WHERE post_type = 'post' AND post_status = 'publish'
-        ORDER BY post_date DESC
+        ORDER BY year DESC, month DESC
     ");
+
+    $norwegian_months = [
+        1 => 'januar', 2 => 'februar', 3 => 'mars', 4 => 'april',
+        5 => 'mai', 6 => 'juni', 7 => 'juli', 8 => 'august',
+        9 => 'september', 10 => 'oktober', 11 => 'november', 12 => 'desember'
+    ];
     ?>
     <div id="category-pills">
         <div class="category-filter-container">
@@ -174,8 +180,9 @@ function ajax_category_pills_shortcode() {
                 <?php 
                 if ($months) {
                     foreach ($months as $m) {
-                        $date_obj = DateTime::createFromFormat('!m', $m->month);
-                        $month_name = date_i18n('F', $date_obj->getTimestamp());
+                        $month_num = (int)$m->month;
+                        $month_name = isset($norwegian_months[$month_num]) ? $norwegian_months[$month_num] : date_i18n('F', mktime(0, 0, 0, $month_num, 10));
+                        $month_name = ucfirst($month_name);
                         $value = $m->year . '-' . str_pad($m->month, 2, '0', STR_PAD_LEFT);
                         echo '<option value="' . esc_attr($value) . '">' . esc_html($month_name . ' ' . $m->year) . '</option>';
                     }
@@ -361,7 +368,7 @@ add_shortcode('category_pills', 'ajax_category_pills_shortcode');
 // AJAX Handler 
 function load_posts_by_category() {
     $category = $_POST['category'] ?? 'all';
-    $month = $_POST['month'] ?? 'all';
+    $month = isset($_POST['month']) ? sanitize_text_field($_POST['month']) : 'all';
     $paged = $_POST['page'] ?? 1;
     $args = [
         'post_type' => 'post',
