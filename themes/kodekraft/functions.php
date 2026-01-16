@@ -330,6 +330,23 @@ function ajax_category_pills_shortcode() {
             .post {
                 flex: 1 1 100%;
             }
+            .category-filter-container {
+                margin-bottom: 20px;
+                display:block;           
+                gap:0px;            
+                max-width:100%;
+                padding:20px
+             }
+             #category-dropdown, #month-dropdown {
+                padding: 10px;
+                font-size: 16px;
+                width: 100%;
+                max-width: 100%x;
+                border: 1px solid #166D47;
+                color: #166D47;
+                background-color: transparent;
+                cursor: pointer;
+         }
         }
         #posts-container .post a{text-decoration: none;}
         .post-date{margin-bottom:20px}
