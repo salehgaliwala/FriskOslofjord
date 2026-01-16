@@ -343,7 +343,7 @@ function ajax_category_pills_shortcode() {
                 gap:0px;            
                 max-width:100%;
                 padding:20px
-             }
+             } 
              #category-dropdown, #month-dropdown {
                 padding: 10px;
                 font-size: 16px;
