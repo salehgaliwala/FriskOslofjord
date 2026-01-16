@@ -341,7 +341,8 @@ function ajax_category_pills_shortcode() {
                 padding: 10px;
                 font-size: 16px;
                 width: 100%;
-                max-width: 100%x;
+                max-width: 100%;
+                margin-bottom:8px;
                 border: 1px solid #166D47;
                 color: #166D47;
                 background-color: transparent;
