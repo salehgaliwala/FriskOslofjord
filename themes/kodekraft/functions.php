@@ -182,7 +182,7 @@ function ajax_category_pills_shortcode() {
                     foreach ($months as $m) {
                         $month_num = (int)$m->month;
                         $month_name = isset($norwegian_months[$month_num]) ? $norwegian_months[$month_num] : date_i18n('F', mktime(0, 0, 0, $month_num, 10));
-                        $month_name = ucfirst($month_name);
+                        $month_name = $month_name;
                         $value = $m->year . '-' . str_pad($m->month, 2, '0', STR_PAD_LEFT);
                         echo '<option value="' . esc_attr($value) . '">' . esc_html($month_name . ' ' . $m->year) . '</option>';
                     }
