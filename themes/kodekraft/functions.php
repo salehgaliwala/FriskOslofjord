@@ -246,10 +246,8 @@ function ajax_category_pills_shortcode() {
         }
         .category-filter-container {
             margin-bottom: 20px;
-            display: flex;
-            justify-content: center;
-            gap: 20px;
-            flex-wrap: wrap;
+            display: inline-flex;           
+            gap: 20px;            
             max-width:650px
         }
         #category-dropdown, #month-dropdown {
