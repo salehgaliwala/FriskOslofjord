@@ -171,7 +171,7 @@ function ajax_category_pills_shortcode() {
             </select>
             <select id="month-dropdown">
                 <option value="all">Alle datoer</option>
-                <?php
+                <?php 
                 if ($months) {
                     foreach ($months as $m) {
                         $date_obj = DateTime::createFromFormat('!m', $m->month);
