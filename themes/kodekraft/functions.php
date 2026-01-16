@@ -250,6 +250,7 @@ function ajax_category_pills_shortcode() {
             justify-content: center;
             gap: 20px;
             flex-wrap: wrap;
+            max-width:650px
         }
         #category-dropdown, #month-dropdown {
             padding: 10px;
